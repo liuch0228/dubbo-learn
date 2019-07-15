@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd        http://dubbo.apache.org/schema/dubbo        http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+	<!-- 1.提供方应用信息，用于计算依赖关系;name属性用来指定当前服务/应用的名字，使用工程名即可 -->
+	<dubbo:application name="user-service-provider" />
+
+	<!-- 2.指定注册中心的地址：使用zookeeper作为注册中心暴露服务地址 下面两种方式都可以 -->
+	<!-- <dubbo:registry address="zookeeper://127.0.0.1:2181" /> -->
+	<dubbo:registry protocol="zookeeper"
+		address="127.0.0.1:2181" />
+
+	<!--3.指定通信规则： 用dubbo协议在20880端口暴露服务 即服务的调用者和服务的提供者之间使用端口20880进行通信 -->
+	<dubbo:protocol name="dubbo" port="20880" />
+
+	<!--4.暴露服务dubbo:service 声明需要暴露的服务接口 ref:指向服务的真正实现对象 -->
+	<dubbo:service
+		interface="com.lch.test.service.UserService" ref="userService" />
+
+	<!-- 和本地bean一样实现服务 -->
+	<bean id="userService"
+		class="com.lch.test.service.impl.UserServiceImpl" />
+
+	<!-- 连接监控中心：使用自动发现的方式 -->
+	<dubbo:monitor protocol="register" />
+	<!-- 直连注册中心 -->
+	<!-- <dubbo:monitor address="127.0.0.1:7070" /> -->
+</beans>
